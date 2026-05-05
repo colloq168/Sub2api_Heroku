@@ -19,7 +19,7 @@ heroku stack:set container -a <APP_NAME>
 
 ### 1. 准备运行时配置
 
-先以 [deploy/config.example.yaml](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/config.example.yaml) 为基础生成一份本地 `config.heroku.yaml`，填好 PostgreSQL、管理员账户、上游账号等业务配置。
+先以 [deploy/config.example.yaml](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/config.example.yaml) 为基础生成一份本地 `config.heroku.yaml`，填好 PostgreSQL、管理员账户、上游账号等业务配置。
 
 Heroku 文件系统是临时的，`config.yaml` 不能依赖手工写入容器。运行时配置需要通过 Config Vars 注入：
 
@@ -79,39 +79,39 @@ curl -i "${WEB_URL%/}/health"
 
 ### 5. 关键文件
 
-- [Dockerfile.heroku](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/Dockerfile.heroku)：Heroku 容器镜像构建文件
-- [deploy/heroku-deploy-from-config.sh](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/heroku-deploy-from-config.sh)：正式发布脚本
-- [deploy/docker-entrypoint.sh](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/docker-entrypoint.sh)：容器启动时恢复 `config.yaml`、`.installed`、`redis.conf`
-- [deploy/config.example.yaml](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/config.example.yaml)：Heroku 运行时配置样例
-- [deploy/README.md](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/README.md)：Heroku 部署补充说明
+- [Dockerfile.heroku](https://github.com/colloq168/Sub2api_Heroku/blob/main/Dockerfile.heroku)：Heroku 容器镜像构建文件
+- [deploy/heroku-deploy-from-config.sh](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/heroku-deploy-from-config.sh)：正式发布脚本
+- [deploy/docker-entrypoint.sh](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/docker-entrypoint.sh)：容器启动时恢复 `config.yaml`、`.installed`、`redis.conf`
+- [deploy/config.example.yaml](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/config.example.yaml)：Heroku 运行时配置样例
+- [deploy/README.md](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/README.md)：Heroku 部署补充说明
 
 ### 6. Heroku PORT 问题修复涉及文件
 
 以下清单不包含 `backend/` 下把 `github.com/Wei-Shaw/sub2api` 统一替换为 `github.com/colloq168/Sub2api_Heroku` 的 import 路径迁移；这里只列解决 Heroku 端口与运行时配置边界问题时修改过的核心文件：
 
-- [backend/internal/config/config.go](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/backend/internal/config/config.go:1205)
+- [backend/internal/config/config.go](https://github.com/colloq168/Sub2api_Heroku/blob/main/backend/internal/config/config.go#L1205)
   - 在加载配置前执行 `applyHerokuEnvCompatibility()`
   - 发现 Heroku `PORT` 时，先同步到 `SERVER_PORT`
   - 监听地址解析时把 `PORT` 的优先级放在 `SERVER_PORT` 之前，避免继续固定监听 `8080`
 
-- [backend/internal/config/config_test.go](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/backend/internal/config/config_test.go:769)
+- [backend/internal/config/config_test.go](https://github.com/colloq168/Sub2api_Heroku/blob/main/backend/internal/config/config_test.go#L769)
   - 新增 Heroku 回归测试：
   - `TestLoadForBootstrapUsesHerokuPortEnv`
   - `TestLoadForBootstrapHerokuPortOverridesPresetServerPort`
   - `TestLoadForBootstrapUsesBindHostEnvCompatibility`
 
-- [deploy/heroku-deploy-from-config.sh](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/heroku-deploy-from-config.sh:4)
+- [deploy/heroku-deploy-from-config.sh](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/heroku-deploy-from-config.sh#L4)
   - 删除了把 `SERVER_PORT` 当 build-time 参数处理的旧思路
   - 发布前自动清理 Heroku 上残留的 `SERVER_PORT`
   - 如存在遗留 `BIND_HOST`，迁移到 `SERVER_HOST` 后再自动清理
   - 统一走无缓存构建、发布、健康检查链路，避免继续依赖手工热修
 
-- [Dockerfile.heroku](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/Dockerfile.heroku:118)
+- [Dockerfile.heroku](https://github.com/colloq168/Sub2api_Heroku/blob/main/Dockerfile.heroku#L118)
   - 移除了运行时业务配置在镜像构建阶段的烘焙逻辑
   - 只保留容器默认值，把实际监听端口交给 Heroku 运行时 `PORT`
   - `HEALTHCHECK` 改为使用 `http://localhost:${PORT:-8080}/health`
 
-- [deploy/docker-entrypoint.sh](/Users/mer/go/src/project/Git/sub2api-deploy/sub2api/deploy/docker-entrypoint.sh:1)
+- [deploy/docker-entrypoint.sh](https://github.com/colloq168/Sub2api_Heroku/blob/main/deploy/docker-entrypoint.sh#L1)
   - 虽然不直接决定监听端口，但它是 Heroku 运行时链路的一部分
   - 容器启动时从 Config Vars 恢复 `config.yaml`、`.installed`、`redis.conf`
   - 这样可以保证端口适配修复后的容器仍按 Heroku 运行时配置启动，而不是依赖容器内手工残留文件
