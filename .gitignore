@@ -1,5 +1,6 @@
 docs/claude-relay-service/
 .codex
+config_精简版.yaml
 
 # ===================
 # Go 后端
@@ -136,3 +137,7 @@ docs/*
 frontend/coverage/
 aicodex
 output/
+.env
+.npmrc
+*.pem
+*.key

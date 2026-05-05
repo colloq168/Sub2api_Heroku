@@ -1,0 +1,239 @@
+# =============================================================================
+# Server Configuration
+# 服务器配置
+# =============================================================================
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "release"
+
+# =============================================================================
+# Database Configuration (PostgreSQL)
+# 数据库配置 (PostgreSQL)
+# =============================================================================
+database:
+  # Database host address
+  # 数据库主机地址
+  host: ""
+  # Database port
+  # 数据库端口
+  port: 5432
+  # Database username
+  # 数据库用户名
+  user: ""
+  # Database password
+  # 数据库密码
+  password: ""
+  # Database name
+  # 数据库名称
+  dbname: ""
+  # SSL mode: disable, prefer, require, verify-ca, verify-full
+  # SSL 模式：disable（禁用）, prefer（优先加密，默认）, require（要求）, verify-ca（验证CA）, verify-full（完全验证）
+  # 默认值为 "prefer"，数据库支持 SSL 时自动使用加密连接，不支持时回退明文
+  sslmode: "require"
+  # Max open connections (高并发场景建议 256+，需配合 PostgreSQL max_connections 调整)
+  # 最大打开连接数
+  max_open_conns: 10
+  # Max idle connections (建议为 max_open_conns 的 50%，减少频繁建连开销)
+  # 最大空闲连接数
+  max_idle_conns: 5
+  # Connection max lifetime (minutes)
+  # 连接最大存活时间（分钟）
+  conn_max_lifetime_minutes: 30
+  # Connection max idle time (minutes)
+  # 空闲连接最大存活时间（分钟）
+  conn_max_idle_time_minutes: 5
+  
+# =============================================================================
+# Redis Configuration
+# Redis 配置
+# =============================================================================
+redis:
+  # Redis host address
+  # Redis 主机地址
+  host: ""
+  # Redis port
+  # Redis 端口
+  port: 17848
+  # Redis password (leave empty if no password is set)
+  # Redis 密码（如果未设置密码则留空）
+  password: ""
+  # Database number (0-15)
+  # 数据库编号（0-15）
+  db: 0
+  # Connection pool size (max concurrent connections)
+  # 连接池大小（最大并发连接数）
+  pool_size: 30
+  # Minimum number of idle connections (高并发场景建议 128+，保持足够热连接)
+  # 最小空闲连接数
+  min_idle_conns: 10
+  # Enable TLS/SSL connection
+  # 是否启用 TLS/SSL 连接
+  enable_tls: false
+
+# =============================================================================
+# Run Mode Configuration
+# 运行模式配置
+# =============================================================================
+# Run mode: "standard" (default) or "simple" (for internal use)
+# 运行模式："standard"（默认）或 "simple"（内部使用）
+# - standard: Full SaaS features with billing/balance checks
+# - standard: 完整 SaaS 功能，包含计费和余额校验
+# - simple: Hides SaaS features and skips billing/balance checks
+# - simple: 隐藏 SaaS 功能，跳过计费和余额校验
+run_mode: "simple"
+
+# =============================================================================
+# Dashboard Aggregation Configuration
+# 仪表盘预聚合配置（重启生效）
+# =============================================================================
+dashboard_aggregation:
+  # Enable aggregation job
+  # 启用聚合作业
+  enabled: false
+
+# =============================================================================
+# Security Configuration
+# 安全配置
+# =============================================================================
+security:
+  url_allowlist:
+    # Enable URL allowlist validation (disable to skip all URL checks)
+    # 启用 URL 白名单验证（禁用则跳过所有 URL 检查）
+    enabled: false
+    # Allowed upstream hosts for API proxying
+    # 允许代理的上游 API 主机列表
+    upstream_hosts:
+      - "api.openai.com"
+      - "api.anthropic.com"
+      - "api.kimi.com"
+      - "open.bigmodel.cn"
+      - "api.minimaxi.com"
+      - "generativelanguage.googleapis.com"
+      - "cloudcode-pa.googleapis.com"
+      - "*.openai.azure.com"
+    # Allowed hosts for pricing data download
+    # 允许下载定价数据的主机列表
+    pricing_hosts:
+      - "raw.githubusercontent.com"
+    # Allowed hosts for CRS sync (required when using CRS sync)
+    # 允许 CRS 同步的主机列表（使用 CRS 同步功能时必须配置）
+    crs_hosts: []
+    # Allow localhost/private IPs for upstream/pricing/CRS (use only in trusted networks)
+    # 允许本地/私有 IP 地址用于上游/定价/CRS（仅在可信网络中使用）
+    allow_private_hosts: true
+    # Allow http:// URLs when allowlist is disabled (default: false, require https)
+    # 白名单禁用时是否允许 http:// URL（默认: false，要求 https）
+    allow_insecure_http: true
+  response_headers:
+    # Enable configurable response header filtering (default: true)
+    # 启用可配置的响应头过滤（默认启用，过滤上游敏感响应头）
+    enabled: true
+    # Extra allowed response headers from upstream
+    # 额外允许的上游响应头
+    additional_allowed: []
+    # Force-remove response headers from upstream
+    # 强制移除的上游响应头
+    force_remove: []
+  csp:
+    # Enable Content-Security-Policy header
+    # 启用内容安全策略 (CSP) 响应头
+    enabled: true
+    # Default CSP policy (override if you host assets on other domains)
+    # 默认 CSP 策略（如果静态资源托管在其他域名，请自行覆盖）
+    # Note: __CSP_NONCE__ will be replaced with 'nonce-xxx' at request time for inline script security
+    # 注意：__CSP_NONCE__ 会在请求时被替换为 'nonce-xxx'，用于内联脚本安全
+    policy: "default-src 'self'; script-src 'self' __CSP_NONCE__ https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https:; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  proxy_probe:
+    # Allow skipping TLS verification for proxy probe (debug only)
+    # 允许代理探测时跳过 TLS 证书验证（仅用于调试）
+    insecure_skip_verify: false
+  proxy_fallback:
+    # Allow auxiliary services (update check, pricing data) to fallback to direct
+    # connection when proxy initialization fails. Does NOT affect AI gateway connections.
+    # 辅助服务（更新检查、定价数据拉取）代理初始化失败时是否允许回退直连。
+    # 不影响 AI 账号网关连接。默认 false：fail-fast 防止 IP 泄露。
+    allow_direct_on_error: false
+
+# =============================================================================
+# Usage Cleanup Task Configuration
+# 使用记录清理任务配置（重启生效）
+# =============================================================================
+usage_cleanup:
+  # Enable cleanup task worker
+  # 启用清理任务执行器
+  enabled: true
+  # Max date range (days) per task
+  # 单次任务最大时间跨度（天）
+  max_range_days: 31
+  # Batch delete size
+  # 单批删除数量
+  batch_size: 5000
+  # Worker interval (seconds)
+  # 执行器轮询间隔（秒）
+  worker_interval_seconds: 10
+  # Task execution timeout (seconds)
+  # 单次任务最大执行时长（秒）
+  task_timeout_seconds: 1800
+
+# =============================================================================
+# Ops Monitoring (Optional)
+# 运维监控 (可选)
+# =============================================================================
+ops:
+  # Enable ops monitoring features (background jobs and APIs)
+  # 是否启用运维监控功能（后台任务和接口）
+  # Set to false to hide ops menu in sidebar and disable all ops features
+  # 设置为 false 可在左侧栏隐藏运维监控菜单并禁用所有运维监控功能
+  # Other detailed settings (cleanup, aggregation, etc.) are configured in ops settings dialog
+  # 其他详细设置（数据清理、预聚合等）在运维监控设置对话框中配置
+  enabled: true
+
+# =============================================================================
+# JWT Configuration
+# JWT 配置
+# =============================================================================
+jwt:
+  # IMPORTANT: Change this to a random string in production!
+  # 重要：生产环境中请更改为随机字符串！
+  # Generate with / 生成命令: openssl rand -hex 32
+  secret: "09378231b0c9048ab158ce31f6da11cb4ff41f08d403feffa8016cb0c9cfcf83"
+  # Token expiration time in hours (max 168)
+  # 令牌过期时间（小时，最大 168）
+  expire_hour: 24
+  # Access Token 过期时间（分钟）
+  # 优先级说明：
+  # - >0: 按分钟生效（优先于 expire_hour）
+  # - =0: 回退使用 expire_hour
+  access_token_expire_minutes: 0
+
+# =============================================================================
+# Default Settings
+# 默认设置
+# =============================================================================
+default:
+  # Initial admin account (created on first run)
+  # 初始管理员账户（首次运行时创建）
+  admin_email: "colloq168@126.com"
+  admin_password: "Guoyanmin012"
+
+  # Default settings for new users
+  # 新用户默认设置
+  # Max concurrent requests per user
+  # 每用户最大并发请求数
+  user_concurrency: 5
+  # Initial balance for new users
+  # 新用户初始余额
+  user_balance: 0
+
+  # API key settings
+  # API 密钥设置
+  # Prefix for generated API keys
+  # 生成的 API 密钥前缀
+  api_key_prefix: "sk-"
+
+  # Rate multiplier (affects billing calculation)
+  # 费率倍数（影响计费计算）
+  rate_multiplier: 1.0
+
+timezone: Asia/Shanghai

@@ -2,16 +2,20 @@
 package config
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-	"fmt"
-	"log/slog"
-	"net/url"
-	"os"
-	"strings"
-	"time"
+    // 标准库
+    "crypto/rand"
+    "encoding/hex"
+    "fmt"
+    "log"
+    "log/slog"
+    "net/url"
+    "os"
+    "strconv"
+    "strings"
+    "time"
 
-	"github.com/spf13/viper"
+    // 第三方库
+    "github.com/spf13/viper"
 )
 
 const (
@@ -1198,6 +1202,8 @@ func LoadForBootstrap() (*Config, error) {
 }
 
 func load(allowMissingJWTSecret bool) (*Config, error) {
+	applyHerokuEnvCompatibility()
+
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 
@@ -1354,6 +1360,18 @@ func load(allowMissingJWTSecret bool) (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+func applyHerokuEnvCompatibility() {
+	if herokuPort := strings.TrimSpace(os.Getenv("PORT")); herokuPort != "" {
+		_ = os.Setenv("SERVER_PORT", herokuPort)
+	}
+
+	if strings.TrimSpace(os.Getenv("SERVER_HOST")) == "" {
+		if bindHost := strings.TrimSpace(os.Getenv("BIND_HOST")); bindHost != "" {
+			_ = os.Setenv("SERVER_HOST", bindHost)
+		}
+	}
 }
 
 func setDefaults() {
@@ -1515,7 +1533,7 @@ func setDefaults() {
 	viper.SetDefault("redis.read_timeout_seconds", 3)
 	viper.SetDefault("redis.write_timeout_seconds", 3)
 	viper.SetDefault("redis.pool_size", 1024)
-	viper.SetDefault("redis.min_idle_conns", 128)
+	viper.SetDefault("redis.min_idle_conns", 5)
 	viper.SetDefault("redis.enable_tls", false)
 
 	// Ops (vNext)
@@ -2582,25 +2600,77 @@ func generateJWTSecret(byteLength int) (string, error) {
 // such as during setup wizard startup.
 // Priority: config.yaml > environment variables > defaults
 func GetServerAddress() string {
-	v := viper.New()
-	v.SetConfigName("config")
-	v.SetConfigType("yaml")
-	v.AddConfigPath(".")
-	v.AddConfigPath("./config")
-	v.AddConfigPath("/etc/sub2api")
-
-	// Support SERVER_HOST and SERVER_PORT environment variables
-	v.AutomaticEnv()
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.SetDefault("server.host", "0.0.0.0")
-	v.SetDefault("server.port", 8080)
-
-	// Try to read config file (ignore errors if not found)
-	_ = v.ReadInConfig()
-
-	host := v.GetString("server.host")
-	port := v.GetInt("server.port")
-	return fmt.Sprintf("%s:%d", host, port)
+    v := viper.New()
+    v.SetConfigName("config")
+    v.SetConfigType("yaml")
+    v.AddConfigPath(".")
+    v.AddConfigPath("./config")
+    v.AddConfigPath("/etc/sub2api/")
+    
+    v.SetDefault("server.host", "0.0.0.0")
+    v.SetDefault("server.port", 8080)
+    v.SetDefault("server.mode", "debug")
+    
+    // 自动加载环境变量
+    v.AutomaticEnv()
+    v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+    
+    // 尝试读取配置文件（忽略错误）
+    _ = v.ReadInConfig()
+    
+    // ─────────────────────────────────────
+    // ⭐ 优先级 1: Heroku 的 $PORT 环境变量
+    // ─────────────────────────────────────
+    herokuPort := os.Getenv("PORT")
+    if herokuPort != "" {
+        // 获取 host（优先使用 SERVER_HOST，其次使用配置文件或默认值）
+        host := os.Getenv("SERVER_HOST")
+        if host == "" {
+            host = v.GetString("server.host")
+        }
+        
+        // 转换端口为整数
+        port, err := strconv.Atoi(herokuPort)
+        if err != nil {
+            log.Printf("⚠️  Warning: Invalid PORT value '%s', using default", herokuPort)
+            port = v.GetInt("server.port")
+        } else {
+            log.Printf("🚀 [Heroku] Using PORT environment variable: %s (address: %s:%d)",
+                herokuPort, host, port)
+        }
+        
+        return fmt.Sprintf("%s:%d", host, port)
+    }
+    
+    // ─────────────────────────────────────
+    // ⭐ 优先级 2: SERVER_PORT 环境变量
+    // ─────────────────────────────────────
+    serverPort := os.Getenv("SERVER_PORT")
+    if serverPort != "" {
+        host := os.Getenv("SERVER_HOST")
+        if host == "" {
+            host = v.GetString("server.host")
+        }
+        
+        port, err := strconv.Atoi(serverPort)
+        if err != nil {
+            log.Printf("⚠️  Warning: Invalid SERVER_PORT value '%s', using default", serverPort)
+            port = v.GetInt("server.port")
+        } else {
+            log.Printf("🚀 [Env] Using SERVER_PORT environment variable: %s (address: %s:%d)",
+                serverPort, host, port)
+            return fmt.Sprintf("%s:%d", host, port)
+        }
+    }
+    
+    // ─────────────────────────────────────
+    // ⭐ 优先级 3: 配置文件或默认值
+    // ─────────────────────────────────────
+    host := v.GetString("server.host")
+    port := v.GetInt("server.port")
+    
+    log.Printf("🚀 [Config] Using server address from config/default: %s:%d", host, port)
+    return fmt.Sprintf("%s:%d", host, port)
 }
 
 // ValidateAbsoluteHTTPURL 验证是否为有效的绝对 HTTP(S) URL

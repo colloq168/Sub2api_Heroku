@@ -1,0 +1,157 @@
+# =============================================================================
+# Sub2API - Heroku Production Dockerfile
+# 原则：
+#   1. 构建阶段只接受真正影响产物的 build args
+#   2. 业务运行时配置一律由 Heroku Config Vars 在容器启动时注入
+# =============================================================================
+
+# 构建参数
+ARG NODE_IMAGE=node:24-alpine
+ARG GOLANG_IMAGE=golang:1.26.2-alpine
+ARG ALPINE_IMAGE=alpine:3.21
+ARG GOPROXY=https://goproxy.cn,direct
+ARG GOSUMDB=sum.golang.google.cn
+
+# =============================================================================
+# Stage 1: Frontend Builder
+# =============================================================================
+FROM ${NODE_IMAGE} AS frontend-builder
+
+# ⭐ 如果 node:alpine 也基于 Alpine，添加镜像源修复
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update --no-cache
+
+WORKDIR /app/frontend
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY frontend/package.json frontend/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY frontend/ ./
+ENV NODE_OPTIONS="--max-old-space-size=2560"
+RUN pnpm run build
+
+# =============================================================================
+# Stage 2: Backend Builder
+# =============================================================================
+FROM ${GOLANG_IMAGE} AS backend-builder
+
+# ⭐ 新增：替换 Alpine 镜像源（解决中国大陆网络问题）
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update --no-cache
+
+ARG VERSION=
+ARG COMMIT=docker
+ARG DATE
+ARG GOPROXY
+ARG GOSUMDB
+
+ENV GOPROXY=${GOPROXY}
+ENV GOSUMDB=${GOSUMDB}
+RUN apk add --no-cache git ca-certificates tzdata
+
+WORKDIR /app/backend
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
+COPY backend/ ./
+COPY --from=frontend-builder /app/backend/internal/web/dist ./internal/web/dist
+
+RUN VERSION_VALUE="${VERSION}" && \
+ if [ -z "${VERSION_VALUE}" ]; then VERSION_VALUE="$(tr -d '\n' < ./cmd/server/VERSION)"; fi && \
+ DATE_VALUE="${DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}" && \
+ CGO_ENABLED=0 GOOS=linux go build \
+# ⭐ 限制同时编译的包数量
+ -p 1 \
+ -tags embed \
+ -ldflags="-s -w -X main.Version=${VERSION_VALUE} -X main.Commit=${COMMIT} -X main.Date=${DATE_VALUE} -X main.BuildType=release" \
+ -trimpath \
+ -o /app/sub2api \
+ ./cmd/server
+
+# =============================================================================
+# Stage 3: Final Runtime Image
+# =============================================================================
+FROM ${ALPINE_IMAGE}
+
+# ⭐ 新增：替换 Alpine 镜像源（解决中国大陆网络问题）
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update --no-cache
+
+LABEL maintainer="Wei-Shaw"
+LABEL description="Sub2API - AI API Gateway Platform (Heroku Production)"
+
+# 安装运行时依赖（现在可以从国内源下载）
+RUN apk add --no-cache \
+    ca-certificates \
+    tzdata \
+    su-exec \
+    libpq \
+    zstd-libs \
+    lz4-libs \
+    krb5-libs \
+    libldap \
+    libedit \
+    curl \
+    && rm -rf /var/cache/apk/*
+
+# 创建非 root 用户
+RUN addgroup -g 1000 sub2api && \
+    adduser -u 1000 -G sub2api -s /bin/sh -D sub2api
+
+# ⭐ 新增：安装 Redis 服务器（仅用于开发/测试！）
+RUN apk add --no-cache redis && \
+    mkdir -p /app/data/redis && \
+    chown -R sub2api:sub2api /app/data/redis
+    
+# ⭐ 新增：Redis 配置文件
+COPY deploy/redis.conf /app/redis.conf
+RUN chown sub2api:sub2api /app/redis.conf
+
+WORKDIR /app
+
+# 复制二进制文件和资源
+COPY --from=backend-builder --chown=sub2api:sub2api /app/sub2api /app/sub2api
+COPY --from=backend-builder --chown=sub2api:sub2api /app/backend/resources /app/resources
+
+# 创建数据目录
+RUN mkdir -p /app/data /app/logs && \
+    chown -R sub2api:sub2api /app/data /app/logs
+
+# ⭐ 新增：启动脚本中同时启动 Redis + 应用
+COPY deploy/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh && \
+    chown sub2api:sub2api /app/docker-entrypoint.sh
+
+# =============================================================================
+# 运行时默认值
+# 说明：
+#   - 这里只保留通用的容器默认值
+#   - 业务配置由 Heroku Config Vars 在运行时注入
+# =============================================================================
+
+ENV TZ="Asia/Shanghai"
+ENV RUN_MODE="standard"
+ENV SERVER_MODE="release"
+ENV SERVER_HOST="0.0.0.0"
+ENV SKIP_BUILTIN_POSTGRES="true"
+ENV SKIP_BUILTIN_REDIS="true"
+
+# =============================================================================
+# 健康检查和启动
+# =============================================================================
+
+# 暴露端口
+EXPOSE 8080
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f "http://localhost:${PORT:-8080}/health" || exit 1
+
+# 切换至非 root 用户
+USER sub2api
+
+# 入口点
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+# 启动命令（由 heroku.yml 的 run 部分覆盖）
+CMD ["/app/sub2api"]

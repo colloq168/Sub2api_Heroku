@@ -766,6 +766,54 @@ func TestGetServerAddressFromEnv(t *testing.T) {
 	}
 }
 
+func TestLoadForBootstrapUsesHerokuPortEnv(t *testing.T) {
+	resetViperWithJWTSecret(t)
+	t.Setenv("SERVER_PORT", "")
+	t.Setenv("PORT", "5123")
+
+	cfg, err := LoadForBootstrap()
+	if err != nil {
+		t.Fatalf("LoadForBootstrap() error: %v", err)
+	}
+	if cfg.Server.Port != 5123 {
+		t.Fatalf("LoadForBootstrap() server.port = %d, want 5123", cfg.Server.Port)
+	}
+}
+
+func TestLoadForBootstrapHerokuPortOverridesPresetServerPort(t *testing.T) {
+	resetViperWithJWTSecret(t)
+	t.Setenv("SERVER_PORT", "8080")
+	t.Setenv("PORT", "5123")
+
+	cfg, err := LoadForBootstrap()
+	if err != nil {
+		t.Fatalf("LoadForBootstrap() error: %v", err)
+	}
+	if cfg.Server.Port != 5123 {
+		t.Fatalf("LoadForBootstrap() server.port = %d, want 5123", cfg.Server.Port)
+	}
+}
+
+func TestLoadForBootstrapUsesBindHostEnvCompatibility(t *testing.T) {
+	resetViperWithJWTSecret(t)
+	t.Setenv("SERVER_HOST", "")
+	tempDir := t.TempDir()
+	t.Setenv("DATA_DIR", tempDir)
+	t.Setenv("BIND_HOST", "0.0.0.0")
+	configPath := filepath.Join(tempDir, "config.yaml")
+	if err := os.WriteFile(configPath, []byte("server:\n  host: 127.0.0.1\n  port: 8080\n"), 0600); err != nil {
+		t.Fatalf("WriteFile() error: %v", err)
+	}
+
+	cfg, err := LoadForBootstrap()
+	if err != nil {
+		t.Fatalf("LoadForBootstrap() error: %v", err)
+	}
+	if cfg.Server.Host != "0.0.0.0" {
+		t.Fatalf("LoadForBootstrap() server.host = %q, want 0.0.0.0", cfg.Server.Host)
+	}
+}
+
 func TestValidateAbsoluteHTTPURL(t *testing.T) {
 	if err := ValidateAbsoluteHTTPURL("https://example.com/path"); err != nil {
 		t.Fatalf("ValidateAbsoluteHTTPURL valid url error: %v", err)
