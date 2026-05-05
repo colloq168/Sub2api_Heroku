@@ -52,8 +52,11 @@ Heroku 文件系统是临时的，容器重启后不会保留 `/app/data` 中手
 # 必需
 heroku config:set SUB2API_CONFIG_YAML_B64="$(base64 < config.yaml | tr -d '\n')" -a <APP_NAME>
 heroku config:set SUB2API_INSTALLED=true -a <APP_NAME>
-
-# 可选
+heroku config:set GOGC=50 -a <APP_NAME>
+heroku config:set GOMEMLIMIT=300MiB -a <APP_NAME>
+heroku config:set SKIP_BUILTIN_POSTGRES=true -a <APP_NAME>
+heroku config:set SKIP_BUILTIN_REDIS=false -a <APP_NAME>
+heroku config:set RUN_MODE=simple -a <APP_NAME>
 heroku config:set SUB2API_REDIS_CONF_B64="$(base64 < deploy/redis.conf | tr -d '\n')" -a <APP_NAME>
 heroku config:set SERVER_HOST=0.0.0.0 -a <APP_NAME>
 ```
