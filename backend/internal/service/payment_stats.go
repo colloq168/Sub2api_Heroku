@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/ent/paymentauditlog"
-	"github.com/Wei-Shaw/sub2api/ent/paymentorder"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/ent/paymentauditlog"
+	"github.com/colloq168/Sub2api_Heroku/ent/paymentorder"
 )
 
 // --- Dashboard & Analytics ---

@@ -13,8 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/Wei-Shaw/sub2api/ent/predicate"
-	"github.com/Wei-Shaw/sub2api/ent/usagecleanuptask"
+	"github.com/colloq168/Sub2api_Heroku/ent/predicate"
+	"github.com/colloq168/Sub2api_Heroku/ent/usagecleanuptask"
 )
 
 // UsageCleanupTaskUpdate is the builder for updating UsageCleanupTask entities.

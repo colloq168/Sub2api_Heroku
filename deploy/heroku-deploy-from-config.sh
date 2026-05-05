@@ -68,11 +68,23 @@ ensure_runtime_config() {
     redis_conf_b64="$(get_config SUB2API_REDIS_CONF_B64)"
 
     if [ -z "${server_host}" ]; then
-        server_host="${bind_host:-0.0.0.0}"
-        echo "补齐运行时 SERVER_HOST=${server_host}"
+        if [ -n "${bind_host}" ]; then
+            server_host="${bind_host}"
+            echo "迁移遗留 BIND_HOST -> SERVER_HOST=${server_host}"
+        else
+            server_host="0.0.0.0"
+            echo "补齐运行时 SERVER_HOST=${server_host}"
+        fi
         heroku config:set SERVER_HOST="${server_host}" -a "${APP_NAME}" >/dev/null
     else
         echo "保留运行时 SERVER_HOST=${server_host}"
+    fi
+
+    if [ -n "${bind_host}" ]; then
+        echo "清理遗留 BIND_HOST=${bind_host}"
+        heroku config:unset BIND_HOST -a "${APP_NAME}" >/dev/null
+    else
+        echo "未发现遗留 BIND_HOST"
     fi
 
     if [ -n "${stale_server_port}" ]; then

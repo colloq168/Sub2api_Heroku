@@ -3,9 +3,9 @@ package admin
 import (
 	"strconv"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/response"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/response"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

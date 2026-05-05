@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/internal/payment"
-	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
+	infraerrors "github.com/colloq168/Sub2api_Heroku/internal/pkg/errors"
 )
 
 func TestBuildCreateOrderResponseDefaultsToOrderCreated(t *testing.T) {

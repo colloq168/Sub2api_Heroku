@@ -8,12 +8,12 @@ import (
 	"sort"
 	"strings"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/ent/apikey"
-	"github.com/Wei-Shaw/sub2api/ent/group"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/logger"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/pagination"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/ent/apikey"
+	"github.com/colloq168/Sub2api_Heroku/ent/group"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/logger"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/pagination"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 	"github.com/lib/pq"
 
 	entsql "entgo.io/ent/dialect/sql"

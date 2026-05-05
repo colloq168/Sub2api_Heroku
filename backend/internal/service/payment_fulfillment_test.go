@@ -8,8 +8,8 @@ import (
 	"math"
 	"testing"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/internal/payment"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
 	"github.com/stretchr/testify/assert"
 )
 

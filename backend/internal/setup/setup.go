@@ -12,10 +12,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/config"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/logger"
-	"github.com/Wei-Shaw/sub2api/internal/repository"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/config"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/logger"
+	"github.com/colloq168/Sub2api_Heroku/internal/repository"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"

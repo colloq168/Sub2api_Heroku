@@ -1,4 +1,4 @@
-module github.com/Wei-Shaw/sub2api
+module github.com/colloq168/Sub2api_Heroku
 
 go 1.26.2
 

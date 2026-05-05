@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/Wei-Shaw/sub2api/ent/proxy"
+	"github.com/colloq168/Sub2api_Heroku/ent/proxy"
 )
 
 // Proxy is the model entity for the Proxy schema.

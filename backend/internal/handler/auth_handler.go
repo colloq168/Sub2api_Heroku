@@ -5,13 +5,13 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/Wei-Shaw/sub2api/internal/config"
-	"github.com/Wei-Shaw/sub2api/internal/handler/dto"
-	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/ip"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/response"
-	middleware2 "github.com/Wei-Shaw/sub2api/internal/server/middleware"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/config"
+	"github.com/colloq168/Sub2api_Heroku/internal/handler/dto"
+	infraerrors "github.com/colloq168/Sub2api_Heroku/internal/pkg/errors"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/ip"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/response"
+	middleware2 "github.com/colloq168/Sub2api_Heroku/internal/server/middleware"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/config"
+	"github.com/colloq168/Sub2api_Heroku/internal/config"
 
 	"github.com/redis/go-redis/v9"
 )

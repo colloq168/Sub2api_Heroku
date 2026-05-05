@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/httpclient"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	infraerrors "github.com/colloq168/Sub2api_Heroku/internal/pkg/errors"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/httpclient"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 )
 
 const defaultClaudeUsageURL = "https://api.anthropic.com/api/oauth/usage"

@@ -23,9 +23,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/pkg/proxyurl"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/proxyutil"
-	"github.com/Wei-Shaw/sub2api/internal/util/urlvalidator"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/proxyurl"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/proxyutil"
+	"github.com/colloq168/Sub2api_Heroku/internal/util/urlvalidator"
 )
 
 // Transport 连接池默认配置

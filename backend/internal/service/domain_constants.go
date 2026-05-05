@@ -1,6 +1,6 @@
 package service
 
-import "github.com/Wei-Shaw/sub2api/internal/domain"
+import "github.com/colloq168/Sub2api_Heroku/internal/domain"
 
 // Status constants
 const (

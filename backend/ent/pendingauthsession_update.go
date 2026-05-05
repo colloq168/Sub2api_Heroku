@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Wei-Shaw/sub2api/ent/identityadoptiondecision"
-	"github.com/Wei-Shaw/sub2api/ent/pendingauthsession"
-	"github.com/Wei-Shaw/sub2api/ent/predicate"
-	"github.com/Wei-Shaw/sub2api/ent/user"
+	"github.com/colloq168/Sub2api_Heroku/ent/identityadoptiondecision"
+	"github.com/colloq168/Sub2api_Heroku/ent/pendingauthsession"
+	"github.com/colloq168/Sub2api_Heroku/ent/predicate"
+	"github.com/colloq168/Sub2api_Heroku/ent/user"
 )
 
 // PendingAuthSessionUpdate is the builder for updating PendingAuthSession entities.

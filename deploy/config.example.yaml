@@ -1,10 +1,14 @@
 # Sub2API Configuration File
 # Sub2API 配置文件
 #
-# Copy this file to /etc/sub2api/config.yaml and modify as needed
-# 复制此文件到 /etc/sub2api/config.yaml 并根据需要修改
+# Use this file as the source of the Heroku runtime config.yaml
+# 以此文件为基础生成 Heroku 运行时 config.yaml
 #
-# Documentation / 文档: https://github.com/Wei-Shaw/sub2api
+# After editing, inject it with:
+# 编辑完成后，通过以下方式注入到 Heroku：
+#   heroku config:set SUB2API_CONFIG_YAML_B64="$(base64 < config.heroku.yaml | tr -d '\n')" -a <APP_NAME>
+#
+# Documentation / 文档: https://github.com/colloq168/Sub2api_Heroku
 
 # =============================================================================
 # Server Configuration
@@ -14,8 +18,8 @@ server:
   # Bind address (0.0.0.0 for all interfaces)
   # 绑定地址（0.0.0.0 表示监听所有网络接口）
   host: "0.0.0.0"
-  # Port to listen on
-  # 监听端口
+  # Container default port. Heroku runtime will override it with $PORT.
+  # 容器默认端口。Heroku 运行时会用 $PORT 覆盖这里的值。
   port: 8080
   # Mode: "debug" for development, "release" for production
   # 运行模式："debug" 用于开发，"release" 用于生产环境
@@ -929,12 +933,12 @@ rate_limit:
 # 定价数据源（可选）
 # =============================================================================
 pricing:
-  # URL to fetch model pricing data (default: pinned model-price-repo commit)
-  # 获取模型定价数据的 URL（默认：固定 commit 的 model-price-repo）
-  remote_url: "https://raw.githubusercontent.com/Wei-Shaw/model-price-repo/refs/heads/main//model_prices_and_context_window.json"
+  # URL to fetch model pricing data (default: upstream model-price-repo main branch)
+  # 获取模型定价数据的 URL（默认：上游 model-price-repo 的 main 分支）
+  remote_url: "https://raw.githubusercontent.com/Wei-Shaw/model-price-repo/main/model_prices_and_context_window.json"
   # Hash verification URL (optional)
   # 哈希校验 URL（可选）
-  hash_url: "https://raw.githubusercontent.com/Wei-Shaw/model-price-repo/refs/heads/main//model_prices_and_context_window.sha256"
+  hash_url: "https://raw.githubusercontent.com/Wei-Shaw/model-price-repo/main/model_prices_and_context_window.sha256"
   # Local data directory for caching
   # 本地数据缓存目录
   data_dir: "./data"

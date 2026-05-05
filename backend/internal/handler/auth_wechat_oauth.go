@@ -12,14 +12,14 @@ import (
 	"strings"
 	"time"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/ent/authidentity"
-	"github.com/Wei-Shaw/sub2api/ent/authidentitychannel"
-	"github.com/Wei-Shaw/sub2api/internal/payment"
-	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/oauth"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/response"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/ent/authidentity"
+	"github.com/colloq168/Sub2api_Heroku/ent/authidentitychannel"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
+	infraerrors "github.com/colloq168/Sub2api_Heroku/internal/pkg/errors"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/oauth"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/response"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

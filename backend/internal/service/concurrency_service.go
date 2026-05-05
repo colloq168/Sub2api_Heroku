@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/pkg/logger"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/logger"
 )
 
 // ConcurrencyCache 定义并发控制的缓存接口

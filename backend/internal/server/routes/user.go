@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/Wei-Shaw/sub2api/internal/handler"
-	"github.com/Wei-Shaw/sub2api/internal/server/middleware"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/handler"
+	"github.com/colloq168/Sub2api_Heroku/internal/server/middleware"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

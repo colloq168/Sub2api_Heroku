@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
+	infraerrors "github.com/colloq168/Sub2api_Heroku/internal/pkg/errors"
 )
 
 // ChannelMonitor 全局常量。

@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/pkg/logger"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/oauth"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/proxyurl"
-	"github.com/Wei-Shaw/sub2api/internal/service"
-	"github.com/Wei-Shaw/sub2api/internal/util/logredact"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/logger"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/oauth"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/proxyurl"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/util/logredact"
 
 	"github.com/imroc/req/v3"
 )

@@ -17,12 +17,12 @@ import (
 
 	"github.com/andybalholm/brotli"
 
-	"github.com/Wei-Shaw/sub2api/internal/config"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/proxyurl"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/proxyutil"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/tlsfingerprint"
-	"github.com/Wei-Shaw/sub2api/internal/service"
-	"github.com/Wei-Shaw/sub2api/internal/util/urlvalidator"
+	"github.com/colloq168/Sub2api_Heroku/internal/config"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/proxyurl"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/proxyutil"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/tlsfingerprint"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/util/urlvalidator"
 )
 
 // 默认配置常量

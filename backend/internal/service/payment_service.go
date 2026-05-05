@@ -12,10 +12,10 @@ import (
 	"sync"
 	"time"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/ent/paymentproviderinstance"
-	"github.com/Wei-Shaw/sub2api/internal/payment"
-	"github.com/Wei-Shaw/sub2api/internal/payment/provider"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/ent/paymentproviderinstance"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment/provider"
 )
 
 // --- Order Status Constants ---

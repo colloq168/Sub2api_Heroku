@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Wei-Shaw/sub2api/internal/payment"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
 )
 
 // EasyPay constants.

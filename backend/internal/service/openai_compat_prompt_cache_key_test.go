@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Wei-Shaw/sub2api/internal/pkg/apicompat"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/apicompat"
 	"github.com/stretchr/testify/require"
 )
 

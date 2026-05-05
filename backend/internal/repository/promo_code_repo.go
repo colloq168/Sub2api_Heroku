@@ -4,11 +4,11 @@ import (
 	"context"
 	"strings"
 
-	dbent "github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/ent/promocode"
-	"github.com/Wei-Shaw/sub2api/ent/promocodeusage"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/pagination"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	dbent "github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/ent/promocode"
+	"github.com/colloq168/Sub2api_Heroku/ent/promocodeusage"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/pagination"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 
 	entsql "entgo.io/ent/dialect/sql"
 )

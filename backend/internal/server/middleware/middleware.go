@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/Wei-Shaw/sub2api/internal/pkg/ctxkey"
-	"github.com/Wei-Shaw/sub2api/internal/pkg/googleapi"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/ctxkey"
+	"github.com/colloq168/Sub2api_Heroku/internal/pkg/googleapi"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 	"github.com/gin-gonic/gin"
 )
 

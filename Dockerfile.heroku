@@ -77,7 +77,7 @@ FROM ${ALPINE_IMAGE}
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
     apk update --no-cache
 
-LABEL maintainer="Wei-Shaw"
+LABEL maintainer="colloq168"
 LABEL description="Sub2API - AI API Gateway Platform (Heroku Production)"
 
 # 安装运行时依赖（现在可以从国内源下载）
@@ -98,12 +98,12 @@ RUN apk add --no-cache \
 RUN addgroup -g 1000 sub2api && \
     adduser -u 1000 -G sub2api -s /bin/sh -D sub2api
 
-# ⭐ 新增：安装 Redis 服务器（仅用于开发/测试！）
+# 安装 Redis 服务器（当前已验证的 Heroku 链路可按需启用内置 Redis）
 RUN apk add --no-cache redis && \
     mkdir -p /app/data/redis && \
     chown -R sub2api:sub2api /app/data/redis
     
-# ⭐ 新增：Redis 配置文件
+# Redis 配置文件
 COPY deploy/redis.conf /app/redis.conf
 RUN chown sub2api:sub2api /app/redis.conf
 
@@ -117,7 +117,7 @@ COPY --from=backend-builder --chown=sub2api:sub2api /app/backend/resources /app/
 RUN mkdir -p /app/data /app/logs && \
     chown -R sub2api:sub2api /app/data /app/logs
 
-# ⭐ 新增：启动脚本中同时启动 Redis + 应用
+# 入口脚本负责恢复配置，并在需要时启动内置 Redis
 COPY deploy/docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh && \
     chown sub2api:sub2api /app/docker-entrypoint.sh

@@ -8,15 +8,15 @@ package main
 
 import (
 	"context"
-	"github.com/Wei-Shaw/sub2api/ent"
-	"github.com/Wei-Shaw/sub2api/internal/config"
-	"github.com/Wei-Shaw/sub2api/internal/handler"
-	"github.com/Wei-Shaw/sub2api/internal/handler/admin"
-	"github.com/Wei-Shaw/sub2api/internal/payment"
-	"github.com/Wei-Shaw/sub2api/internal/repository"
-	"github.com/Wei-Shaw/sub2api/internal/server"
-	"github.com/Wei-Shaw/sub2api/internal/server/middleware"
-	"github.com/Wei-Shaw/sub2api/internal/service"
+	"github.com/colloq168/Sub2api_Heroku/ent"
+	"github.com/colloq168/Sub2api_Heroku/internal/config"
+	"github.com/colloq168/Sub2api_Heroku/internal/handler"
+	"github.com/colloq168/Sub2api_Heroku/internal/handler/admin"
+	"github.com/colloq168/Sub2api_Heroku/internal/payment"
+	"github.com/colloq168/Sub2api_Heroku/internal/repository"
+	"github.com/colloq168/Sub2api_Heroku/internal/server"
+	"github.com/colloq168/Sub2api_Heroku/internal/server/middleware"
+	"github.com/colloq168/Sub2api_Heroku/internal/service"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"net/http"
@@ -26,7 +26,7 @@ import (
 
 import (
 	_ "embed"
-	_ "github.com/Wei-Shaw/sub2api/ent/runtime"
+	_ "github.com/colloq168/Sub2api_Heroku/ent/runtime"
 )
 
 // Injectors from wire.go:
